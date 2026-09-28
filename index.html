@@ -2,212 +2,1142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web Arcade - MAME/FBNeo</title>
-    <!-- Import Nostalgist Library directly to avoid strict mode module errors -->
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>WEB ARCADE - FBNeo</title>
+
+    <!-- Nostalgist -->
     <script src="https://unpkg.com/nostalgist/dist/nostalgist.iife.js"></script>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
-            background-color: #050510;
-            color: #00ffcc;
-            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top, #10102b 0%, #050510 45%, #000000 100%);
+            color: #00ffcc;
+            font-family: "Courier New", Courier, monospace;
+
             display: flex;
             flex-direction: column;
             align-items: center;
+
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        h1 {
-            color: #ff0055;
-            text-shadow: 0 0 10px #ff0055;
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            width: 100%;
             text-align: center;
-            margin-top: 30px;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
+            padding: 35px 15px 10px;
         }
-        h3 {
+
+        h1 {
+            margin: 0;
+
+            color: #ff0055;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+
+            text-shadow:
+                0 0 5px #ff0055,
+                0 0 15px #ff0055,
+                0 0 30px #ff0055;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+
             color: #00ffcc;
-            margin-top: 0;
-            text-shadow: 0 0 5px #00ffcc;
+            font-size: 1rem;
+
+            text-shadow:
+                0 0 5px #00ffcc,
+                0 0 10px #00ffcc;
         }
+
+        /* =========================
+           MENU
+        ========================= */
+
         .menu-container {
-            background: rgba(0, 0, 0, 0.8);
+            width: calc(100% - 30px);
+            max-width: 650px;
+
+            margin: 25px 15px;
+
+            padding: 25px;
+
+            background: rgba(0, 0, 0, 0.88);
+
             border: 2px solid #00ffcc;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 0 15px #00ffcc;
+            border-radius: 12px;
+
+            box-shadow:
+                0 0 10px #00ffcc,
+                0 0 30px rgba(0, 255, 204, 0.2);
+
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
+
         label {
+            color: #00ffcc;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
-        select, input[type="file"] {
-            padding: 10px;
-            font-size: 16px;
-            background: #111;
-            color: #fff;
-            border: 1px solid #ff0055;
-            border-radius: 5px;
-            outline: none;
+
+        select,
+        input[type="file"] {
             width: 100%;
-            box-sizing: border-box;
+
+            padding: 13px;
+
+            background: #0d0d0d;
+            color: #ffffff;
+
+            border: 1px solid #ff0055;
+            border-radius: 6px;
+
+            outline: none;
+
+            font-family: inherit;
+            font-size: 16px;
         }
+
+        select:focus,
+        input[type="file"]:focus {
+            border-color: #00ffcc;
+
+            box-shadow:
+                0 0 5px #00ffcc;
+        }
+
+        option {
+            background: #111111;
+            color: white;
+        }
+
+        /* =========================
+           UPLOAD
+        ========================= */
+
         .upload-section {
             display: none;
+
+            padding: 15px;
+
             border: 1px dashed #ffcc00;
-            padding: 15px;
-            margin-top: 10px;
+
+            background: rgba(255, 204, 0, 0.04);
+
+            border-radius: 6px;
         }
+
+        .upload-section label {
+            color: #ffcc00;
+        }
+
+        /* =========================
+           BUTTON
+        ========================= */
+
         button {
-            padding: 15px;
-            font-size: 20px;
-            font-weight: bold;
+            width: 100%;
+
+            padding: 14px;
+
             background: transparent;
             color: #ff0055;
+
             border: 2px solid #ff0055;
-            border-radius: 5px;
+            border-radius: 6px;
+
             cursor: pointer;
-            box-shadow: 0 0 10px #ff0055 inset, 0 0 10px #ff0055;
+
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: bold;
+
             text-transform: uppercase;
-            transition: 0.2s;
+
+            box-shadow:
+                0 0 8px #ff0055 inset,
+                0 0 10px #ff0055;
+
+            transition:
+                background 0.2s,
+                color 0.2s,
+                transform 0.1s;
         }
+
         button:hover {
             background: #ff0055;
-            color: #fff;
+            color: white;
         }
-        #game-container {
-            width: 100%;
-            max-width: 800px;
-            aspect-ratio: 4/3;
-            background: #000;
-            border: 2px solid #00ffcc;
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        #loading {
             display: none;
+
+            margin: 15px;
+
+            color: #ffcc00;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            text-align: center;
+
+            text-shadow:
+                0 0 5px #ffcc00,
+                0 0 10px #ffcc00;
+        }
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-message {
+            display: none;
+
+            padding: 12px;
+
+            color: #ff0055;
+
+            background: rgba(255, 0, 85, 0.08);
+
+            border: 1px solid #ff0055;
+            border-radius: 5px;
+
+            text-align: center;
+
+            font-weight: bold;
+
+            line-height: 1.5;
+        }
+
+        /* =========================
+           GAME AREA
+        ========================= */
+
+        #game-wrapper {
+            display: none;
+
+            width: 100%;
+            max-width: 1000px;
+
+            padding: 10px 15px 30px;
+        }
+
+        #game-container {
+            position: relative;
+
+            width: 100%;
+
+            aspect-ratio: 4 / 3;
+
+            min-height: 300px;
+
+            background: #000000;
+
+            border: 2px solid #00ffcc;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+
+            display: flex;
+
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px #00ffcc;
+
+            box-shadow:
+                0 0 10px #00ffcc,
+                0 0 35px rgba(0, 255, 204, 0.25);
         }
-        canvas {
+
+        #game-container canvas {
+            display: block;
+
             max-width: 100%;
             max-height: 100%;
+
+            image-rendering: pixelated;
         }
-        #loading {
+
+        /* =========================
+           GAME CONTROLS
+        ========================= */
+
+        .game-controls {
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 12px;
+
+            flex-wrap: wrap;
+        }
+
+        .game-controls button {
+            flex: 1;
+
+            min-width: 130px;
+
+            padding: 10px;
+
+            font-size: 14px;
+        }
+
+        .restart-button {
             color: #ffcc00;
-            font-size: 18px;
-            display: none;
-            text-align: center;
-            margin: 20px;
-            text-shadow: 0 0 5px #ffcc00;
+            border-color: #ffcc00;
+
+            box-shadow:
+                0 0 8px #ffcc00 inset,
+                0 0 10px #ffcc00;
         }
-        .error-message {
+
+        .restart-button:hover {
+            background: #ffcc00;
+            color: #000;
+        }
+
+        .fullscreen-button {
+            color: #00ffcc;
+            border-color: #00ffcc;
+
+            box-shadow:
+                0 0 8px #00ffcc inset,
+                0 0 10px #00ffcc;
+        }
+
+        .fullscreen-button:hover {
+            background: #00ffcc;
+            color: #000;
+        }
+
+        .exit-button {
             color: #ff0055;
-            text-align: center;
+        }
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        #status {
             margin-top: 10px;
-            font-weight: bold;
+
+            color: #777;
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            margin-top: auto;
+
+            padding: 20px;
+
+            color: #555;
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .menu-container {
+                padding: 18px;
+            }
+
+            #game-container {
+                aspect-ratio: 4 / 3;
+                min-height: 240px;
+            }
+
+            .game-controls {
+                flex-direction: column;
+            }
+
+            .game-controls button {
+                width: 100%;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <h1>WEB ARCADE</h1>
-    <h3>MAME / FBNEO EMULATOR</h3>
+    <!-- =========================
+         HEADER
+    ========================= -->
 
-    <div class="menu-container" id="menu">
-        <label for="game-select">SELECT A GAME</label>
-        <select id="game-select" onchange="toggleUpload()">
-            <option value="ddsomur1.zip">Dungeons & Dragons: Shadow over Mystra</option>
-            <option value="upload">-- UPLOAD CUSTOM ROM --</option>
-        </select>
+    <div class="header">
 
-        <div id="upload-section" class="upload-section">
-            <label>INSERT ROM (.zip)</label><br><br>
-            <input type="file" id="rom-upload" accept=".zip">
+        <h1>WEB ARCADE</h1>
+
+        <div class="subtitle">
+            MAME / FBNEO EMULATOR
         </div>
 
-        <button onclick="startGame()">Play Start</button>
-        <div id="error-div" class="error-message"></div>
     </div>
 
-    <h3 id="loading">Naglo-load ang emulator at laro... Pakihintay...</h3>
 
-    <div id="game-container"></div>
+    <!-- =========================
+         MENU
+    ========================= -->
+
+    <div class="menu-container" id="menu">
+
+        <label for="game-select">
+            SELECT A GAME
+        </label>
+
+        <select id="game-select">
+            <option value="ddsomur1.zip">
+                Dungeons & Dragons: Shadow over Mystara
+            </option>
+
+            <option value="upload">
+                -- UPLOAD CUSTOM ROM --
+            </option>
+        </select>
+
+
+        <!-- CUSTOM ROM -->
+
+        <div
+            id="upload-section"
+            class="upload-section"
+        >
+
+            <label>
+                INSERT ROM (.ZIP)
+            </label>
+
+            <br>
+            <br>
+
+            <input
+                type="file"
+                id="rom-upload"
+                accept=".zip"
+            >
+
+        </div>
+
+
+        <!-- PLAY -->
+
+        <button id="play-button">
+            ▶ PLAY START
+        </button>
+
+
+        <!-- ERROR -->
+
+        <div
+            id="error-div"
+            class="error-message"
+        ></div>
+
+    </div>
+
+
+    <!-- =========================
+         LOADING
+    ========================= -->
+
+    <div id="loading">
+
+        ⏳ LOADING EMULATOR...<br>
+
+        Please wait...
+
+    </div>
+
+
+    <!-- =========================
+         GAME
+    ========================= -->
+
+    <div id="game-wrapper">
+
+        <div id="game-container"></div>
+
+
+        <div class="game-controls">
+
+            <button
+                class="restart-button"
+                id="restart-button"
+            >
+                ↻ RESTART
+            </button>
+
+            <button
+                class="fullscreen-button"
+                id="fullscreen-button"
+            >
+                ⛶ FULLSCREEN
+            </button>
+
+            <button
+                class="exit-button"
+                id="exit-button"
+            >
+                ✕ EXIT GAME
+            </button>
+
+        </div>
+
+
+        <div id="status">
+            FBNeo emulator
+        </div>
+
+    </div>
+
+
+    <footer>
+        WEB ARCADE • Powered by Nostalgist.js
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
 
     <script>
+
         let nostalgistInstance = null;
 
-        function toggleUpload() {
-            const select = document.getElementById('game-select');
-            const uploadDiv = document.getElementById('upload-section');
-            if (select.value === 'upload') {
-                uploadDiv.style.display = 'block';
-            } else {
-                uploadDiv.style.display = 'none';
+        let currentRom = null;
+
+        let currentRomFile = null;
+
+
+        /* ==========================================
+           ELEMENTS
+        ========================================== */
+
+        const menu =
+            document.getElementById("menu");
+
+        const gameSelect =
+            document.getElementById("game-select");
+
+        const uploadSection =
+            document.getElementById("upload-section");
+
+        const romUpload =
+            document.getElementById("rom-upload");
+
+        const playButton =
+            document.getElementById("play-button");
+
+        const restartButton =
+            document.getElementById("restart-button");
+
+        const fullscreenButton =
+            document.getElementById("fullscreen-button");
+
+        const exitButton =
+            document.getElementById("exit-button");
+
+        const gameWrapper =
+            document.getElementById("game-wrapper");
+
+        const gameContainer =
+            document.getElementById("game-container");
+
+        const loading =
+            document.getElementById("loading");
+
+        const errorDiv =
+            document.getElementById("error-div");
+
+        const status =
+            document.getElementById("status");
+
+
+        /* ==========================================
+           TOGGLE UPLOAD
+        ========================================== */
+
+        gameSelect.addEventListener(
+            "change",
+            function () {
+
+                clearError();
+
+                if (gameSelect.value === "upload") {
+
+                    uploadSection.style.display =
+                        "block";
+
+                } else {
+
+                    uploadSection.style.display =
+                        "none";
+
+                    romUpload.value = "";
+
+                }
+
             }
+        );
+
+
+        /* ==========================================
+           ERROR
+        ========================================== */
+
+        function showError(message) {
+
+            errorDiv.style.display =
+                "block";
+
+            errorDiv.innerHTML =
+                message;
+
         }
 
-        async function startGame() {
-            if (typeof Nostalgist === 'undefined') {
-                document.getElementById('error-div').innerHTML = "Nostalgist library is still loading. Please wait 3 seconds and click Play again.";
+
+        function clearError() {
+
+            errorDiv.style.display =
+                "none";
+
+            errorDiv.innerHTML =
+                "";
+
+        }
+
+
+        /* ==========================================
+           STOP CURRENT GAME
+        ========================================== */
+
+        async function stopGame() {
+
+            if (!nostalgistInstance) {
                 return;
             }
 
-            const gameSelect = document.getElementById('game-select').value;
-            const fileInput = document.getElementById('rom-upload').files[0];
-            const menu = document.getElementById('menu');
-            const gameContainer = document.getElementById('game-container');
-            const loading = document.getElementById('loading');
-            const errorDiv = document.getElementById('error-div');
-            
-            errorDiv.innerHTML = "";
-            menu.style.display = 'none';
-            loading.style.display = 'block';
-
             try {
-                // FIXED: Changed delete to null assignment to avoid strict mode errors
-                if (nostalgistInstance) {
-                    nostalgistInstance.exit({ removeCanvas: true });
-                    nostalgistInstance = null; 
-                }
 
-                gameContainer.style.display = 'flex';
-
-                let romData;
-                if (gameSelect === 'upload') {
-                    if (!fileInput) {
-                        throw new Error("Pumili muna ng .zip file bago pindutin ang Play Start.");
-                    }
-                    romData = fileInput;
-                } else {
-                    romData = 'roms/' + gameSelect;
-                }
-
-                nostalgistInstance = await Nostalgist.launch({
-                    core: 'fbneo', 
-                    rom: romData, 
-                    element: gameContainer,
-                    resolveRom(file) {
-                        return 'roms/' + file;
-                    }
+                await nostalgistInstance.exit({
+                    removeCanvas: true
                 });
 
-                loading.style.display = 'none';
+            } catch (error) {
+
+                console.warn(
+                    "Emulator exit warning:",
+                    error
+                );
+
+            }
+
+            nostalgistInstance = null;
+
+            gameContainer.innerHTML = "";
+
+        }
+
+
+        /* ==========================================
+           GET ROM
+        ========================================== */
+
+        function getSelectedRom() {
+
+            const selected =
+                gameSelect.value;
+
+
+            /*
+             * CUSTOM UPLOAD
+             */
+
+            if (selected === "upload") {
+
+                const file =
+                    romUpload.files[0];
+
+                if (!file) {
+
+                    throw new Error(
+                        "Pumili muna ng ROM .ZIP file."
+                    );
+
+                }
+
+                return file;
+
+            }
+
+
+            /*
+             * GITHUB ROM
+             *
+             * IMPORTANT:
+             * Filename lamang ang ibinabalik.
+             */
+
+            return selected;
+
+        }
+
+
+        /* ==========================================
+           START GAME
+        ========================================== */
+
+        async function startGame() {
+
+            clearError();
+
+            /*
+             * Check Nostalgist
+             */
+
+            if (
+                typeof Nostalgist ===
+                "undefined"
+            ) {
+
+                showError(
+                    "Hindi pa ready ang Nostalgist.js. " +
+                    "I-refresh ang page at subukan muli."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                playButton.disabled =
+                    true;
+
+                playButton.innerText =
+                    "LOADING...";
+
+
+                loading.style.display =
+                    "block";
+
+
+                menu.style.display =
+                    "none";
+
+
+                gameWrapper.style.display =
+                    "block";
+
+
+                /*
+                 * Stop previous game
+                 */
+
+                await stopGame();
+
+
+                /*
+                 * Get ROM
+                 */
+
+                const rom =
+                    getSelectedRom();
+
+
+                currentRom =
+                    rom;
+
+
+                /*
+                 * Store uploaded file
+                 */
+
+                if (
+                    rom instanceof File
+                ) {
+
+                    currentRomFile =
+                        rom;
+
+                } else {
+
+                    currentRomFile =
+                        null;
+
+                }
+
+
+                /*
+                 * Launch FBNeo
+                 */
+
+                nostalgistInstance =
+                    await Nostalgist.launch({
+
+                        core: "fbneo",
+
+                        rom: rom,
+
+                        element:
+                            gameContainer,
+
+
+                        /*
+                         * Resolve ROM
+                         *
+                         * GitHub Pages:
+                         *
+                         * https://kikyamx.github.io/arcade-site/
+                         *
+                         * ROM:
+                         *
+                         * /roms/game.zip
+                         */
+
+                        resolveRom(file) {
+
+                            return (
+                                "./roms/" +
+                                file
+                            );
+
+                        }
+
+                    });
+
+
+                /*
+                 * SUCCESS
+                 */
+
+                loading.style.display =
+                    "none";
+
+
+                status.innerText =
+                    "FBNeo • GAME RUNNING";
+
 
             } catch (error) {
-                console.error(error);
-                loading.style.display = 'none';
-                menu.style.display = 'flex';
-                gameContainer.style.display = 'none';
-                
-                errorDiv.innerHTML = `FATAL ERROR:<br><br>${error.message}`;
+
+                console.error(
+                    "GAME ERROR:",
+                    error
+                );
+
+
+                loading.style.display =
+                    "none";
+
+
+                gameWrapper.style.display =
+                    "none";
+
+
+                menu.style.display =
+                    "flex";
+
+
+                let message =
+                    error &&
+                    error.message
+                        ? error.message
+                        : String(error);
+
+
+                showError(
+                    "FATAL ERROR:<br><br>" +
+                    message +
+                    "<br><br>" +
+                    "Check the browser console (F12) " +
+                    "for more details."
+                );
+
+            } finally {
+
+                playButton.disabled =
+                    false;
+
+                playButton.innerText =
+                    "▶ PLAY START";
+
             }
+
         }
+
+
+        /* ==========================================
+           RESTART
+        ========================================== */
+
+        async function restartGame() {
+
+            if (!currentRom) {
+                return;
+            }
+
+
+            clearError();
+
+
+            loading.style.display =
+                "block";
+
+
+            try {
+
+                await stopGame();
+
+
+                nostalgistInstance =
+                    await Nostalgist.launch({
+
+                        core: "fbneo",
+
+                        rom: currentRom,
+
+                        element:
+                            gameContainer,
+
+
+                        resolveRom(file) {
+
+                            return (
+                                "./roms/" +
+                                file
+                            );
+
+                        }
+
+                    });
+
+
+                loading.style.display =
+                    "none";
+
+
+                status.innerText =
+                    "FBNeo • GAME RESTARTED";
+
+
+            } catch (error) {
+
+                loading.style.display =
+                    "none";
+
+
+                console.error(
+                    error
+                );
+
+
+                showError(
+                    "RESTART ERROR:<br><br>" +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* ==========================================
+           FULLSCREEN
+        ========================================== */
+
+        async function fullscreenGame() {
+
+            try {
+
+                if (
+                    !document.fullscreenElement
+                ) {
+
+                    await gameWrapper.requestFullscreen();
+
+                } else {
+
+                    await document.exitFullscreen();
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Fullscreen error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* ==========================================
+           EXIT
+        ========================================== */
+
+        async function exitGame() {
+
+            await stopGame();
+
+
+            gameWrapper.style.display =
+                "none";
+
+
+            loading.style.display =
+                "none";
+
+
+            menu.style.display =
+                "flex";
+
+
+            currentRom =
+                null;
+
+            currentRomFile =
+                null;
+
+
+            status.innerText =
+                "FBNeo emulator";
+
+
+            clearError();
+
+        }
+
+
+        /* ==========================================
+           EVENTS
+        ========================================== */
+
+        playButton.addEventListener(
+            "click",
+            startGame
+        );
+
+
+        restartButton.addEventListener(
+            "click",
+            restartGame
+        );
+
+
+        fullscreenButton.addEventListener(
+            "click",
+            fullscreenGame
+        );
+
+
+        exitButton.addEventListener(
+            "click",
+            exitGame
+        );
+
+
+        /* ==========================================
+           KEYBOARD SHORTCUT
+        ========================================== */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                /*
+                 * F11
+                 */
+
+                if (event.key === "F11") {
+
+                    event.preventDefault();
+
+                    fullscreenGame();
+
+                }
+
+
+                /*
+                 * ESC
+                 *
+                 * Browser normally handles ESC
+                 * for fullscreen.
+                 */
+
+            }
+        );
+
+
+        /* ==========================================
+           INITIALIZATION
+        ========================================== */
+
+        window.addEventListener(
+            "load",
+            function () {
+
+                console.log(
+                    "WEB ARCADE initialized."
+                );
+
+                console.log(
+                    "Nostalgist:",
+                    typeof Nostalgist !==
+                        "undefined"
+                );
+
+            }
+        );
+
     </script>
+
 </body>
 </html>
