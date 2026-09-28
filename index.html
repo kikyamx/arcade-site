@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,10 +10,11 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>WEB ARCADE</title>
+    <title>WEB ARCADE - MAME</title>
 
-    <!-- NOSTALGIST -->
+    <!-- Nostalgist.js -->
     <script src="https://unpkg.com/nostalgist"></script>
+
 
     <style>
 
@@ -19,11 +22,26 @@
             box-sizing: border-box;
         }
 
+
+        html,
         body {
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
 
-            background: #050510;
+
+        body {
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #11112b 0%,
+                    #050510 45%,
+                    #000000 100%
+                );
+
             color: #00ffcc;
 
             font-family:
@@ -32,60 +50,126 @@
                 monospace;
 
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
         }
 
+
+        /* ============================
+           HEADER
+        ============================ */
+
+        .header {
+
+            width: 100%;
+
+            text-align: center;
+
+            padding:
+                30px
+                15px
+                10px;
+        }
+
+
         h1 {
-            margin-top: 30px;
-            margin-bottom: 5px;
+
+            margin: 0;
 
             color: #ff0055;
 
-            text-shadow:
-                0 0 10px #ff0055,
-                0 0 25px #ff0055;
+            font-size:
+                clamp(
+                    2rem,
+                    6vw,
+                    3.5rem
+                );
 
-            text-align: center;
+            text-shadow:
+                0 0 5px #ff0055,
+                0 0 15px #ff0055,
+                0 0 30px #ff0055;
         }
 
-        h3 {
-            margin-top: 0;
+
+        .subtitle {
+
+            margin-top: 8px;
 
             color: #00ffcc;
 
-            text-shadow:
-                0 0 5px #00ffcc;
+            font-size: 16px;
 
-            text-align: center;
+            font-weight: bold;
+
+            text-shadow:
+                0 0 5px #00ffcc,
+                0 0 10px #00ffcc;
         }
 
+
+        /* ============================
+           MENU
+        ============================ */
+
         #menu {
-            width: 90%;
+
+            width:
+                calc(100% - 30px);
+
             max-width: 650px;
 
-            margin-top: 30px;
+            margin:
+                25px 15px;
 
-            padding: 25px;
+            padding: 24px;
 
-            background: rgba(0, 0, 0, 0.85);
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.88
+                );
 
-            border: 2px solid #00ffcc;
+            border:
+                2px solid #00ffcc;
 
             border-radius: 10px;
 
             box-shadow:
-                0 0 15px #00ffcc;
+                0 0 10px #00ffcc,
+                0 0 30px
+                rgba(
+                    0,
+                    255,
+                    204,
+                    0.25
+                );
 
             display: flex;
+
             flex-direction: column;
 
             gap: 15px;
         }
 
+
         label {
+
+            color: #00ffcc;
+
             font-weight: bold;
+
+            font-size: 16px;
         }
+
 
         select,
         input[type="file"] {
@@ -98,26 +182,88 @@
 
             color: white;
 
-            border: 1px solid #ff0055;
+            border:
+                1px solid #ff0055;
 
             border-radius: 5px;
+
+            outline: none;
 
             font-family: inherit;
 
             font-size: 16px;
         }
 
-        button {
+
+        select:focus,
+        input[type="file"]:focus {
+
+            border-color: #00ffcc;
+
+            box-shadow:
+                0 0 8px #00ffcc;
+        }
+
+
+        option {
+
+            background: #111;
+
+            color: white;
+        }
+
+
+        /* ============================
+           UPLOAD
+        ============================ */
+
+        #upload-section {
+
+            display: none;
 
             padding: 15px;
+
+            border:
+                1px dashed #ffcc00;
+
+            border-radius: 5px;
+
+            background:
+                rgba(
+                    255,
+                    204,
+                    0,
+                    0.03
+                );
+        }
+
+
+        #upload-section label {
+
+            color: #ffcc00;
+        }
+
+
+        /* ============================
+           BUTTON
+        ============================ */
+
+        button {
+
+            width: 100%;
+
+            padding: 14px;
 
             background: transparent;
 
             color: #ff0055;
 
-            border: 2px solid #ff0055;
+            border:
+                2px solid #ff0055;
 
             border-radius: 5px;
+
+            cursor: pointer;
 
             font-family: inherit;
 
@@ -125,12 +271,15 @@
 
             font-weight: bold;
 
-            cursor: pointer;
+            text-transform: uppercase;
 
             box-shadow:
                 0 0 10px #ff0055 inset,
                 0 0 10px #ff0055;
+
+            transition: 0.2s;
         }
+
 
         button:hover {
 
@@ -139,58 +288,108 @@
             color: white;
         }
 
-        #upload-section {
-            display: none;
 
-            padding: 15px;
+        button:disabled {
 
-            border: 1px dashed #ffcc00;
+            opacity: 0.5;
+
+            cursor: wait;
         }
+
+
+        /* ============================
+           ERROR
+        ============================ */
 
         #error {
 
             display: none;
 
-            padding: 15px;
+            padding: 14px;
 
             color: #ff0055;
 
-            border: 1px solid #ff0055;
+            border:
+                1px solid #ff0055;
+
+            border-radius: 5px;
+
+            background:
+                rgba(
+                    255,
+                    0,
+                    85,
+                    0.08
+                );
 
             text-align: center;
 
             line-height: 1.5;
+
+            font-weight: bold;
         }
+
+
+        /* ============================
+           LOADING
+        ============================ */
 
         #loading {
 
             display: none;
 
+            margin: 20px;
+
             color: #ffcc00;
 
+            font-size: 17px;
+
+            font-weight: bold;
+
             text-align: center;
+
+            text-shadow:
+                0 0 5px #ffcc00;
         }
+
+
+        /* ============================
+           GAME
+        ============================ */
 
         #game-wrapper {
 
             display: none;
 
-            width: 95%;
+            width: 100%;
 
             max-width: 1000px;
 
-            margin-top: 20px;
+            padding:
+                10px
+                15px
+                30px;
         }
 
+
         #game-container {
+
+            position: relative;
 
             width: 100%;
 
             aspect-ratio: 4 / 3;
 
-            background: black;
+            min-height: 300px;
 
-            border: 2px solid #00ffcc;
+            background: #000;
+
+            border:
+                2px solid #00ffcc;
+
+            border-radius: 8px;
+
+            overflow: hidden;
 
             display: flex;
 
@@ -198,43 +397,197 @@
 
             align-items: center;
 
-            overflow: hidden;
+            box-shadow:
+                0 0 10px #00ffcc,
+                0 0 30px
+                rgba(
+                    0,
+                    255,
+                    204,
+                    0.25
+                );
         }
 
-        canvas {
+
+        /*
+         * IMPORTANT:
+         * Nostalgist needs a CANVAS.
+         */
+
+        #game-canvas {
+
+            display: block;
+
+            width: 100%;
+
+            height: 100%;
 
             max-width: 100%;
+
             max-height: 100%;
+
+            image-rendering: pixelated;
+
+            background: #000;
         }
 
-        #controls {
+
+        /* ============================
+           CONTROLS
+        ============================ */
+
+        .controls {
 
             display: flex;
 
             gap: 10px;
 
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
-        #controls button {
+
+        .controls button {
+
             flex: 1;
+
             font-size: 14px;
+
+            padding: 10px;
+        }
+
+
+        .restart {
+
+            color: #ffcc00;
+
+            border-color: #ffcc00;
+
+            box-shadow:
+                0 0 10px
+                #ffcc00 inset,
+                0 0 10px
+                #ffcc00;
+        }
+
+
+        .restart:hover {
+
+            background: #ffcc00;
+
+            color: #000;
+        }
+
+
+        .fullscreen {
+
+            color: #00ffcc;
+
+            border-color: #00ffcc;
+
+            box-shadow:
+                0 0 10px
+                #00ffcc inset,
+                0 0 10px
+                #00ffcc;
+        }
+
+
+        .fullscreen:hover {
+
+            background: #00ffcc;
+
+            color: #000;
+        }
+
+
+        /* ============================
+           STATUS
+        ============================ */
+
+        #status {
+
+            margin-top: 10px;
+
+            color: #777;
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+
+        /* ============================
+           FOOTER
+        ============================ */
+
+        footer {
+
+            margin-top: auto;
+
+            padding: 20px;
+
+            color: #555;
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+
+        /* ============================
+           MOBILE
+        ============================ */
+
+        @media (max-width: 600px) {
+
+            #menu {
+
+                padding: 18px;
+            }
+
+
+            #game-container {
+
+                min-height: 240px;
+            }
+
+
+            .controls {
+
+                flex-direction: column;
+            }
+
         }
 
     </style>
+
 </head>
 
 
 <body>
 
-    <h1>
-        WEB ARCADE
-    </h1>
 
-    <h3>
-        MAME / FBNEO EMULATOR
-    </h3>
+    <!-- ============================
+         HEADER
+    ============================ -->
 
+    <div class="header">
+
+        <h1>
+            WEB ARCADE
+        </h1>
+
+        <div class="subtitle">
+            MAME / FBNEO EMULATOR
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================
+         MENU
+    ============================ -->
 
     <div id="menu">
 
@@ -242,19 +595,27 @@
             SELECT A GAME
         </label>
 
+
         <select id="game-select">
 
             <option value="ddsomur1.zip">
+
                 Dungeons & Dragons:
                 Shadow over Mystara
+
             </option>
 
+
             <option value="upload">
+
                 -- UPLOAD CUSTOM ROM --
+
             </option>
 
         </select>
 
+
+        <!-- UPLOAD -->
 
         <div id="upload-section">
 
@@ -262,7 +623,8 @@
                 INSERT ROM (.ZIP)
             </label>
 
-            <br><br>
+            <br>
+            <br>
 
             <input
                 type="file"
@@ -273,577 +635,769 @@
         </div>
 
 
+        <!-- PLAY -->
+
         <button id="play-button">
+
             ▶ PLAY START
+
         </button>
 
+
+        <!-- ERROR -->
 
         <div id="error"></div>
 
     </div>
 
 
+
+    <!-- ============================
+         LOADING
+    ============================ -->
+
     <div id="loading">
-        ⏳ Loading emulator...
+
+        ⏳ LOADING EMULATOR...
+
+        <br><br>
+
+        Please wait...
+
     </div>
 
 
+
+    <!-- ============================
+         GAME
+    ============================ -->
+
     <div id="game-wrapper">
 
-        <div id="game-container"></div>
 
-        <div id="controls">
+        <div id="game-container">
 
-            <button id="restart">
+            <!--
+                IMPORTANT:
+                This MUST be a CANVAS.
+            -->
+
+            <canvas
+                id="game-canvas"
+                tabindex="0"
+            ></canvas>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="restart"
+                id="restart-button"
+            >
                 ↻ RESTART
             </button>
 
-            <button id="fullscreen">
+
+            <button
+                class="fullscreen"
+                id="fullscreen-button"
+            >
                 ⛶ FULLSCREEN
             </button>
 
-            <button id="exit">
+
+            <button
+                id="exit-button"
+            >
                 ✕ EXIT
             </button>
+
+        </div>
+
+
+        <div id="status">
+
+            MAME 2003-Plus
 
         </div>
 
     </div>
 
 
-<script>
 
-    console.log(
-        "WEB ARCADE STARTING..."
-    );
+    <footer>
 
+        WEB ARCADE
+        •
+        Powered by Nostalgist.js
 
-    /*
-     * =========================================
-     * CHECK NOSTALGIST
-     * =========================================
-     */
-
-    console.log(
-        "Nostalgist:",
-        typeof Nostalgist
-    );
+    </footer>
 
 
-    window.addEventListener(
-        "load",
-        function () {
 
-            console.log(
-                "PAGE LOADED"
+    <script>
+
+
+        /* ========================================
+           VARIABLES
+        ======================================== */
+
+        let emulator = null;
+
+        let currentRom = null;
+
+
+
+        /* ========================================
+           ELEMENTS
+        ======================================== */
+
+        const menu =
+            document.getElementById(
+                "menu"
             );
 
-            console.log(
-                "Nostalgist after page load:",
-                typeof Nostalgist
+
+        const gameSelect =
+            document.getElementById(
+                "game-select"
             );
 
-        }
-    );
 
-
-    /*
-     * =========================================
-     * ELEMENTS
-     * =========================================
-     */
-
-    const menu =
-        document.getElementById(
-            "menu"
-        );
-
-    const select =
-        document.getElementById(
-            "game-select"
-        );
-
-    const uploadSection =
-        document.getElementById(
-            "upload-section"
-        );
-
-    const upload =
-        document.getElementById(
-            "rom-upload"
-        );
-
-    const play =
-        document.getElementById(
-            "play-button"
-        );
-
-    const errorBox =
-        document.getElementById(
-            "error"
-        );
-
-    const loading =
-        document.getElementById(
-            "loading"
-        );
-
-    const wrapper =
-        document.getElementById(
-            "game-wrapper"
-        );
-
-    const game =
-        document.getElementById(
-            "game-container"
-        );
-
-    const restart =
-        document.getElementById(
-            "restart"
-        );
-
-    const fullscreen =
-        document.getElementById(
-            "fullscreen"
-        );
-
-    const exit =
-        document.getElementById(
-            "exit"
-        );
-
-
-    let emulator = null;
-
-    let currentRom = null;
-
-
-    /*
-     * =========================================
-     * ERROR
-     * =========================================
-     */
-
-    function showError(message) {
-
-        errorBox.style.display =
-            "block";
-
-        errorBox.innerHTML =
-            message;
-
-    }
-
-
-    function clearError() {
-
-        errorBox.style.display =
-            "none";
-
-        errorBox.innerHTML =
-            "";
-
-    }
-
-
-    /*
-     * =========================================
-     * UPLOAD TOGGLE
-     * =========================================
-     */
-
-    select.addEventListener(
-        "change",
-        function () {
-
-            clearError();
-
-            if (
-                select.value ===
-                "upload"
-            ) {
-
-                uploadSection.style.display =
-                    "block";
-
-            } else {
-
-                uploadSection.style.display =
-                    "none";
-
-                upload.value =
-                    "";
-
-            }
-
-        }
-    );
-
-
-    /*
-     * =========================================
-     * STOP EMULATOR
-     * =========================================
-     */
-
-    async function stopEmulator() {
-
-        if (!emulator) {
-            return;
-        }
-
-        try {
-
-            emulator.exit({
-                removeCanvas: true
-            });
-
-        } catch (e) {
-
-            console.warn(
-                "Exit error:",
-                e
+        const uploadSection =
+            document.getElementById(
+                "upload-section"
             );
 
-        }
 
-        emulator = null;
-
-        game.innerHTML = "";
-
-    }
-
-
-    /*
-     * =========================================
-     * START GAME
-     * =========================================
-     */
-
-    async function startGame() {
-
-        clearError();
-
-
-        /*
-         * VERY IMPORTANT CHECK
-         */
-
-        if (
-            typeof Nostalgist ===
-            "undefined"
-        ) {
-
-            showError(
-
-                "Nostalgist.js was NOT loaded.<br><br>" +
-
-                "Open F12 → Console and check " +
-                "the red error message."
-
+        const romUpload =
+            document.getElementById(
+                "rom-upload"
             );
 
-            console.error(
-                "NOSTALGIST IS UNDEFINED"
+
+        const playButton =
+            document.getElementById(
+                "play-button"
             );
 
-            return;
-        }
+
+        const errorBox =
+            document.getElementById(
+                "error"
+            );
 
 
-        try {
-
-            play.disabled =
-                true;
-
-            play.innerText =
-                "LOADING...";
+        const loading =
+            document.getElementById(
+                "loading"
+            );
 
 
-            loading.style.display =
+        const gameWrapper =
+            document.getElementById(
+                "game-wrapper"
+            );
+
+
+        const gameCanvas =
+            document.getElementById(
+                "game-canvas"
+            );
+
+
+        const gameContainer =
+            document.getElementById(
+                "game-container"
+            );
+
+
+        const restartButton =
+            document.getElementById(
+                "restart-button"
+            );
+
+
+        const fullscreenButton =
+            document.getElementById(
+                "fullscreen-button"
+            );
+
+
+        const exitButton =
+            document.getElementById(
+                "exit-button"
+            );
+
+
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+
+
+        /* ========================================
+           CHECK LIBRARY
+        ======================================== */
+
+        console.log(
+            "=============================="
+        );
+
+        console.log(
+            "WEB ARCADE"
+        );
+
+        console.log(
+            "Nostalgist:",
+            typeof Nostalgist
+        );
+
+        console.log(
+            "=============================="
+        );
+
+
+
+        /* ========================================
+           ERROR
+        ======================================== */
+
+        function showError(message) {
+
+            errorBox.style.display =
                 "block";
 
+            errorBox.innerHTML =
+                message;
 
-            menu.style.display =
+        }
+
+
+        function clearError() {
+
+            errorBox.style.display =
                 "none";
 
+            errorBox.innerHTML =
+                "";
 
-            wrapper.style.display =
-                "block";
-
-
-            await stopEmulator();
+        }
 
 
-            /*
-             * GET ROM
-             */
 
-            let rom;
+        /* ========================================
+           ROM SELECT
+        ======================================== */
 
+        gameSelect.addEventListener(
+            "change",
+            function () {
 
-            if (
-                select.value ===
-                "upload"
-            ) {
-
-                rom =
-                    upload.files[0];
+                clearError();
 
 
-                if (!rom) {
+                if (
+                    gameSelect.value ===
+                    "upload"
+                ) {
 
-                    throw new Error(
-                        "Please select a ZIP ROM."
-                    );
+                    uploadSection.style.display =
+                        "block";
+
+                } else {
+
+                    uploadSection.style.display =
+                        "none";
+
+                    romUpload.value =
+                        "";
 
                 }
 
-            } else {
-
-                /*
-                 * ONLY FILENAME
-                 */
-
-                rom =
-                    select.value;
-
             }
+        );
 
 
-            currentRom =
-                rom;
 
+        /* ========================================
+           STOP EMULATOR
+        ======================================== */
 
-            console.log(
-                "ROM:",
-                rom
-            );
+        async function stopEmulator() {
 
+            if (!emulator) {
 
-            /*
-             * =================================
-             * LAUNCH FBNEO
-             * =================================
-             */
-
-            emulator =
-                await Nostalgist.launch({
-
-                    core: "fbneo",
-
-                    rom: rom,
-
-                    element:
-                        game,
-
-
-                    /*
-                     * GitHub ROM location
-                     */
-
-                    resolveRom(
-                        filename
-                    ) {
-
-                        const url =
-                            "./roms/" +
-                            filename;
-
-                        console.log(
-                            "ROM URL:",
-                            url
-                        );
-
-                        return url;
-
-                    },
-
-                    cache: true
-
-                });
-
-
-            loading.style.display =
-                "none";
-
-
-            console.log(
-                "FBNeo started successfully."
-            );
-
-
-        } catch (e) {
-
-            console.error(
-                "EMULATOR ERROR:",
-                e
-            );
-
-
-            loading.style.display =
-                "none";
-
-
-            wrapper.style.display =
-                "none";
-
-
-            menu.style.display =
-                "flex";
-
-
-            showError(
-
-                "EMULATOR ERROR:<br><br>" +
-
-                (
-                    e.message ||
-                    e
-                )
-
-            );
-
-        } finally {
-
-            play.disabled =
-                false;
-
-            play.innerText =
-                "▶ PLAY START";
-
-        }
-
-    }
-
-
-    /*
-     * =========================================
-     * RESTART
-     * =========================================
-     */
-
-    restart.addEventListener(
-        "click",
-        async function () {
-
-            if (!currentRom) {
                 return;
+
             }
-
-            clearError();
-
-            await stopEmulator();
 
 
             try {
 
+                emulator.exit({
+                    removeCanvas: false
+                });
+
+            } catch (error) {
+
+                console.warn(
+                    "Emulator exit:",
+                    error
+                );
+
+            }
+
+
+            emulator = null;
+
+        }
+
+
+
+        /* ========================================
+           GET ROM
+        ======================================== */
+
+        function getRom() {
+
+
+            /*
+             * CUSTOM UPLOAD
+             */
+
+            if (
+                gameSelect.value ===
+                "upload"
+            ) {
+
+                const file =
+                    romUpload.files[0];
+
+
+                if (!file) {
+
+                    throw new Error(
+                        "Pumili muna ng .ZIP ROM."
+                    );
+
+                }
+
+
+                return file;
+
+            }
+
+
+            /*
+             * GITHUB ROM
+             */
+
+            return gameSelect.value;
+
+        }
+
+
+
+        /* ========================================
+           START GAME
+        ======================================== */
+
+        async function startGame() {
+
+            clearError();
+
+
+            /*
+             * Check Nostalgist
+             */
+
+            if (
+                typeof Nostalgist ===
+                "undefined"
+            ) {
+
+                showError(
+                    "Nostalgist.js is not loaded."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                playButton.disabled =
+                    true;
+
+                playButton.innerText =
+                    "LOADING...";
+
+
+                loading.style.display =
+                    "block";
+
+
+                menu.style.display =
+                    "none";
+
+
+                gameWrapper.style.display =
+                    "block";
+
+
+                /*
+                 * Stop old emulator
+                 */
+
+                await stopEmulator();
+
+
+                /*
+                 * Get ROM
+                 */
+
+                const rom =
+                    getRom();
+
+
+                currentRom =
+                    rom;
+
+
+                console.log(
+                    "ROM:",
+                    rom
+                );
+
+
+                /*
+                 * =================================
+                 * LAUNCH
+                 * =================================
+                 *
+                 * IMPORTANT:
+                 *
+                 * element = CANVAS
+                 *
+                 * NOT DIV.
+                 *
+                 */
+
                 emulator =
                     await Nostalgist.launch({
 
-                        core: "fbneo",
+                        /*
+                         * Use MAME 2003-Plus
+                         *
+                         * Current Nostalgist docs
+                         * support this core by default.
+                         */
 
-                        rom: currentRom,
+                        core:
+                            "mame2003_plus",
+
+
+                        /*
+                         * ROM
+                         */
+
+                        rom:
+                            rom,
+
+
+                        /*
+                         * CANVAS
+                         */
 
                         element:
-                            game,
+                            gameCanvas,
+
+
+                        /*
+                         * GitHub Pages ROM
+                         */
 
                         resolveRom(
                             filename
                         ) {
 
-                            return (
+                            const url =
                                 "./roms/" +
-                                filename
+                                filename;
+
+
+                            console.log(
+                                "ROM URL:",
+                                url
                             );
+
+
+                            return url;
 
                         },
 
-                        cache: true
+
+                        /*
+                         * Cache core + ROM
+                         */
+
+                        cache: {
+
+                            core: true,
+
+                            rom: true,
+
+                            bios: true
+
+                        }
 
                     });
 
-            } catch (e) {
 
-                console.error(e);
+                /*
+                 * SUCCESS
+                 */
 
-                showError(
-                    e.message
+                loading.style.display =
+                    "none";
+
+
+                status.innerText =
+                    "MAME 2003-Plus • GAME RUNNING";
+
+
+                /*
+                 * Focus emulator
+                 */
+
+                gameCanvas.focus();
+
+
+                console.log(
+                    "GAME STARTED!"
                 );
 
+            } catch (error) {
+
+                console.error(
+                    "EMULATOR ERROR:",
+                    error
+                );
+
+
+                loading.style.display =
+                    "none";
+
+
+                gameWrapper.style.display =
+                    "none";
+
+
+                menu.style.display =
+                    "flex";
+
+
+                showError(
+
+                    "FATAL ERROR:<br><br>" +
+
+                    (
+                        error.message ||
+                        error
+                    )
+
+                );
+
+            } finally {
+
+                playButton.disabled =
+                    false;
+
+                playButton.innerText =
+                    "▶ PLAY START";
+
             }
 
         }
-    );
 
 
-    /*
-     * =========================================
-     * FULLSCREEN
-     * =========================================
-     */
 
-    fullscreen.addEventListener(
-        "click",
-        async function () {
+        /* ========================================
+           RESTART
+        ======================================== */
 
-            if (
-                !document.fullscreenElement
-            ) {
+        restartButton.addEventListener(
+            "click",
+            async function () {
 
-                await wrapper.requestFullscreen();
+                if (!currentRom) {
 
-            } else {
+                    return;
 
-                await document.exitFullscreen();
+                }
+
+
+                clearError();
+
+
+                try {
+
+                    await stopEmulator();
+
+
+                    emulator =
+                        await Nostalgist.launch({
+
+                            core:
+                                "mame2003_plus",
+
+                            rom:
+                                currentRom,
+
+                            element:
+                                gameCanvas,
+
+                            resolveRom(
+                                filename
+                            ) {
+
+                                return (
+                                    "./roms/" +
+                                    filename
+                                );
+
+                            },
+
+                            cache: {
+
+                                core: true,
+
+                                rom: true,
+
+                                bios: true
+
+                            }
+
+                        });
+
+
+                    gameCanvas.focus();
+
+
+                    status.innerText =
+                        "MAME 2003-Plus • RESTARTED";
+
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    showError(
+                        error.message ||
+                        String(error)
+                    );
+
+                }
 
             }
-
-        }
-    );
+        );
 
 
-    /*
-     * =========================================
-     * EXIT
-     * =========================================
-     */
 
-    exit.addEventListener(
-        "click",
-        async function () {
+        /* ========================================
+           FULLSCREEN
+        ======================================== */
 
-            await stopEmulator();
+        fullscreenButton.addEventListener(
+            "click",
+            async function () {
+
+                try {
+
+                    if (
+                        !document.fullscreenElement
+                    ) {
+
+                        await gameWrapper.requestFullscreen();
+
+                    } else {
+
+                        await document.exitFullscreen();
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Fullscreen:",
+                        error
+                    );
+
+                }
+
+            }
+        );
 
 
-            wrapper.style.display =
-                "none";
+
+        /* ========================================
+           EXIT
+        ======================================== */
+
+        exitButton.addEventListener(
+            "click",
+            async function () {
+
+                await stopEmulator();
 
 
-            menu.style.display =
-                "flex";
+                gameWrapper.style.display =
+                    "none";
 
 
-            currentRom =
-                null;
-
-        }
-    );
+                menu.style.display =
+                    "flex";
 
 
-    /*
-     * =========================================
-     * PLAY
-     * =========================================
-     */
+                loading.style.display =
+                    "none";
 
-    play.addEventListener(
-        "click",
-        startGame
-    );
 
-</script>
+                currentRom =
+                    null;
+
+
+                status.innerText =
+                    "MAME 2003-Plus";
+
+
+                clearError();
+
+            }
+        );
+
+
+
+        /* ========================================
+           PLAY
+        ======================================== */
+
+        playButton.addEventListener(
+            "click",
+            startGame
+        );
+
+
+    </script>
 
 </body>
+
 </html>
