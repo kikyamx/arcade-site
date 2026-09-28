@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Web Arcade - MAME/FBNeo</title>
+    <!-- Import Nostalgist Library directly to avoid strict mode module errors -->
+    <script src="https://unpkg.com/nostalgist/dist/nostalgist.iife.js"></script>
     <style>
         body {
             background-color: #050510;
@@ -46,7 +48,7 @@
             font-weight: bold;
             font-size: 1.2rem;
         }
-        select {
+        select, input[type="file"] {
             padding: 10px;
             font-size: 16px;
             background: #111;
@@ -54,6 +56,14 @@
             border: 1px solid #ff0055;
             border-radius: 5px;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .upload-section {
+            display: none;
+            border: 1px dashed #ffcc00;
+            padding: 15px;
+            margin-top: 10px;
         }
         button {
             padding: 15px;
@@ -111,9 +121,16 @@
 
     <div class="menu-container" id="menu">
         <label for="game-select">SELECT A GAME</label>
-        <select id="game-select">
-            <option value="ddsomur1.zip">DUNGEONS & DRAGONS: SHADOW OVER MYSTRA</option>
+        <select id="game-select" onchange="toggleUpload()">
+            <option value="ddsomur1.zip">Dungeons & Dragons: Shadow over Mystra</option>
+            <option value="upload">-- UPLOAD CUSTOM ROM --</option>
         </select>
+
+        <div id="upload-section" class="upload-section">
+            <label>INSERT ROM (.zip)</label><br><br>
+            <input type="file" id="rom-upload" accept=".zip">
+        </div>
+
         <button onclick="startGame()">Play Start</button>
         <div id="error-div" class="error-message"></div>
     </div>
@@ -122,11 +139,27 @@
 
     <div id="game-container"></div>
 
-    <script type="module">
+    <script>
         let nostalgistInstance = null;
 
-        window.startGame = async function() {
+        function toggleUpload() {
+            const select = document.getElementById('game-select');
+            const uploadDiv = document.getElementById('upload-section');
+            if (select.value === 'upload') {
+                uploadDiv.style.display = 'block';
+            } else {
+                uploadDiv.style.display = 'none';
+            }
+        }
+
+        async function startGame() {
+            if (typeof Nostalgist === 'undefined') {
+                document.getElementById('error-div').innerHTML = "Nostalgist library is still loading. Please wait 3 seconds and click Play again.";
+                return;
+            }
+
             const gameSelect = document.getElementById('game-select').value;
+            const fileInput = document.getElementById('rom-upload').files[0];
             const menu = document.getElementById('menu');
             const gameContainer = document.getElementById('game-container');
             const loading = document.getElementById('loading');
@@ -137,10 +170,7 @@
             loading.style.display = 'block';
 
             try {
-                // Kumukuha ng Nostalgist library
-                const { Nostalgist } = await import('https://esm.sh/nostalgist');
-
-                // Linisin kung may nakabukas na laro dati
+                // FIXED: Changed delete to null assignment to avoid strict mode errors
                 if (nostalgistInstance) {
                     nostalgistInstance.exit({ removeCanvas: true });
                     nostalgistInstance = null; 
@@ -148,10 +178,19 @@
 
                 gameContainer.style.display = 'flex';
 
-                // Buksan ang laro gamit ang FinalBurn Neo core
+                let romData;
+                if (gameSelect === 'upload') {
+                    if (!fileInput) {
+                        throw new Error("Pumili muna ng .zip file bago pindutin ang Play Start.");
+                    }
+                    romData = fileInput;
+                } else {
+                    romData = 'roms/' + gameSelect;
+                }
+
                 nostalgistInstance = await Nostalgist.launch({
                     core: 'fbneo', 
-                    rom: 'roms/' + gameSelect, 
+                    rom: romData, 
                     element: gameContainer,
                     resolveRom(file) {
                         return 'roms/' + file;
@@ -166,13 +205,9 @@
                 menu.style.display = 'flex';
                 gameContainer.style.display = 'none';
                 
-                errorDiv.innerHTML = `
-                    FATAL ERROR:<br><br>
-                    ${error.message}<br><br>
-                    Check if <b>${gameSelect}</b> is in the <b>/roms/</b> folder.
-                `;
+                errorDiv.innerHTML = `FATAL ERROR:<br><br>${error.message}`;
             }
-        };
+        }
     </script>
 </body>
 </html>
