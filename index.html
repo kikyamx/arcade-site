@@ -3,287 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Retro Web Arcade Emulator</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
+    <title>Web Arcade - MAME/FBNeo</title>
     <style>
-        :root {
-            --neon-green: #39ff14;
-            --neon-pink: #ff007f;
-            --neon-blue: #0ff;
-            --neon-yellow: #ffff00;
-            --bg-color: #050510;
-        }
-
         body {
-            font-family: 'Press Start 2P', cursive;
-            background-color: var(--bg-color);
+            background-color: #050510;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #ff0055;
+            text-shadow: 0 0 10px #ff0055;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        h3 {
+            color: #00ffcc;
+            margin-top: 0;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+        .menu-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffcc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 0 15px #00ffcc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            background: #111;
             color: #fff;
-            overflow-x: hidden;
-            touch-action: none;
+            border: 1px solid #ff0055;
+            border-radius: 5px;
+            outline: none;
         }
-
-        .crt::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
+        button {
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background: transparent;
+            color: #ff0055;
+            border: 2px solid #ff0055;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #ff0055 inset, 0 0 10px #ff0055;
+            text-transform: uppercase;
+            transition: 0.2s;
         }
-
-        .crt-flicker { animation: flicker 0.15s infinite; }
-        @keyframes flicker {
-            0% { opacity: 0.98; }
-            50% { opacity: 0.95; }
-            100% { opacity: 0.99; }
+        button:hover {
+            background: #ff0055;
+            color: #fff;
         }
-
-        .text-glow-green { text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green); color: var(--neon-green); }
-        .text-glow-pink { text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink); color: var(--neon-pink); }
-        .text-glow-blue { text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); color: var(--neon-blue); }
-        .text-glow-yellow { text-shadow: 0 0 5px var(--neon-yellow), 0 0 10px var(--neon-yellow); color: var(--neon-yellow); }
-        .box-glow { box-shadow: 0 0 10px var(--neon-blue), inset 0 0 10px var(--neon-blue); border-color: var(--neon-blue); }
-        .box-glow-pink { box-shadow: 0 0 10px var(--neon-pink), inset 0 0 10px var(--neon-pink); border-color: var(--neon-pink); }
-
-        .d-pad-btn {
-            width: 50px; height: 50px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid var(--neon-blue); border-radius: 8px;
-            display: flex; justify-content: center; align-items: center;
-            color: var(--neon-blue); user-select: none; -webkit-user-select: none;
-        }
-        .d-pad-btn:active { background: var(--neon-blue); color: #000; }
-
-        .action-btn {
-            width: 60px; height: 60px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid var(--neon-pink); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            color: var(--neon-pink); user-select: none; -webkit-user-select: none;
-        }
-        .action-btn:active { background: var(--neon-pink); color: #000; }
-
-        .system-btn {
-            padding: 10px 15px; background: rgba(255,255,255,0.1);
-            border: 2px solid var(--neon-green); border-radius: 20px;
-            color: var(--neon-green); font-size: 10px; user-select: none; -webkit-user-select: none;
-        }
-        .system-btn:active { background: var(--neon-green); color: #000; }
-
         #game-container {
-            width: 100%; max-width: 800px; aspect-ratio: 4/3;
-            background-color: #000; position: relative; margin: 0 auto;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4/3;
+            background: #000;
+            border: 2px solid #00ffcc;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px #00ffcc;
         }
-        canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
-        
-        @media (min-width: 768px) { #virtual-gamepad { display: none !important; } }
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        #loading {
+            color: #ffcc00;
+            font-size: 18px;
+            display: none;
+            text-align: center;
+            margin: 20px;
+            text-shadow: 0 0 5px #ffcc00;
+        }
+        .error-message {
+            color: #ff0055;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col p-4">
+<body>
 
-    <header class="text-center mb-6 mt-4">
-        <h1 class="text-2xl md:text-4xl text-glow-pink mb-2">WEB ARCADE</h1>
-        <p class="text-[10px] md:text-xs text-glow-blue">MAME / FBNEO EMULATOR</p>
-    </header>
+    <h1>WEB ARCADE</h1>
+    <h3>MAME / FBNEO EMULATOR</h3>
 
-    <div class="max-w-4xl mx-auto w-full mb-6 p-4 border-2 box-glow bg-black bg-opacity-50 rounded-lg">
-        <div class="flex flex-col md:flex-row gap-4 justify-between items-end text-xs">
-            <div class="flex flex-col w-full flex-grow">
-                <label class="mb-2 text-glow-green">SELECT A GAME</label>
-                <select id="game-select" class="bg-transparent border-2 border-white text-white p-3 outline-none font-sans font-bold uppercase cursor-pointer w-full">
-                    <option value="" disabled selected>-- Choose a Game --</option>
-                    <option value="ddsom" class="bg-gray-800 text-white">Dungeons & Dragons: Shadow over Mystra</option>
-                    <option value="custom" class="bg-gray-800 text-yellow-400">Upload Custom ROM...</option>
-                </select>
-                
-                <div id="custom-upload-section" class="hidden mt-3 p-3 border border-yellow-400 border-dashed">
-                    <label class="text-glow-yellow text-[10px] mb-2 block">INSERT ROM (.zip)</label>
-                    <input type="file" id="rom-file" accept=".zip" multiple class="text-[10px] w-full text-white">
-                </div>
-            </div>
-
-            <div class="flex flex-col w-full md:w-auto mt-4 md:mt-0">
-                <button onclick="playGame()" class="border-2 border-neon-pink box-glow-pink text-glow-pink py-3 px-8 hover:bg-[#ff007f] hover:text-black transition-colors w-full h-full text-sm">
-                    PLAY START
-                </button>
-            </div>
-        </div>
+    <div class="menu-container" id="menu">
+        <label for="game-select">SELECT A GAME</label>
+        <select id="game-select">
+            <option value="ddsomur1.zip">DUNGEONS & DRAGONS: SHADOW OVER MYSTRA</option>
+        </select>
+        <button onclick="startGame()">Play Start</button>
+        <div id="error-div" class="error-message"></div>
     </div>
 
-    <div class="flex-grow flex flex-col items-center w-full relative">
-        <div class="w-full max-w-[800px] flex justify-end mb-2">
-            <button onclick="toggleFullscreen()" id="fullscreen-btn" class="hidden text-[10px] text-glow-blue border border-cyan-400 px-2 py-1 hover:bg-cyan-900">
-                [FULLSCREEN]
-            </button>
-        </div>
+    <h3 id="loading">Naglo-load ang emulator at laro... Pakihintay...</h3>
 
-        <div id="game-container" class="border-4 box-glow crt rounded-md overflow-hidden shadow-2xl">
-            <div id="message-overlay" class="absolute inset-0 z-10 bg-black bg-opacity-80 flex flex-col items-center justify-center crt-flicker">
-                <p id="message-text" class="text-glow-green text-center text-sm md:text-base leading-loose p-4">
-                    INSERT COIN<br><br>SELECT GAME TO START
-                </p>
-                <button id="message-close" onclick="hideMessage()" class="mt-4 border border-white px-4 py-2 text-[10px] hidden hover:bg-white hover:text-black">OK</button>
-            </div>
-            <canvas id="arcade-canvas"></canvas>
-        </div>
-    </div>
+    <div id="game-container"></div>
 
-    <div id="virtual-gamepad" class="w-full max-w-lg mx-auto mt-6 flex flex-col gap-6 p-2">
-        <div class="flex justify-center gap-8 mb-2">
-            <button class="system-btn" ontouchstart="simKey('Shift', 16, 'keydown')" ontouchend="simKey('Shift', 16, 'keyup')">COIN</button>
-            <button class="system-btn" ontouchstart="simKey('Enter', 13, 'keydown')" ontouchend="simKey('Enter', 13, 'keyup')">START</button>
-        </div>
-
-        <div class="flex justify-between items-center px-4">
-            <div class="grid grid-cols-3 gap-1">
-                <div></div>
-                <button class="d-pad-btn" ontouchstart="simKey('ArrowUp', 38, 'keydown')" ontouchend="simKey('ArrowUp', 38, 'keyup')">▲</button>
-                <div></div>
-                <button class="d-pad-btn" ontouchstart="simKey('ArrowLeft', 37, 'keydown')" ontouchend="simKey('ArrowLeft', 37, 'keyup')">◀</button>
-                <button class="d-pad-btn" ontouchstart="simKey('ArrowDown', 40, 'keydown')" ontouchend="simKey('ArrowDown', 40, 'keyup')">▼</button>
-                <button class="d-pad-btn" ontouchstart="simKey('ArrowRight', 39, 'keydown')" ontouchend="simKey('ArrowRight', 39, 'keyup')">▶</button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 transform rotate-12">
-                <button class="action-btn" ontouchstart="simKey('s', 83, 'keydown')" ontouchend="simKey('s', 83, 'keyup')">X</button>
-                <button class="action-btn" ontouchstart="simKey('x', 88, 'keydown')" ontouchend="simKey('x', 88, 'keyup')">A</button>
-                <button class="action-btn" ontouchstart="simKey('a', 65, 'keydown')" ontouchend="simKey('a', 65, 'keyup')">Y</button>
-                <button class="action-btn" ontouchstart="simKey('z', 90, 'keydown')" ontouchend="simKey('z', 90, 'keyup')">B</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
+    <script type="module">
         let nostalgistInstance = null;
 
-        // DITO NATIN NILAGAY YUNG SPECIFIC FILENAME MO
-        const gameLibrary = {
-            'ddsom': {
-                core: 'fbneo', 
-                roms: ['roms/ddsomur1.zip'] 
-            }
-        };
-
-        document.getElementById('game-select').addEventListener('change', function(e) {
-            const customSection = document.getElementById('custom-upload-section');
-            if (e.target.value === 'custom') {
-                customSection.classList.remove('hidden');
-            } else {
-                customSection.classList.add('hidden');
-            }
-        });
-
-        function showMessage(text, isError = false) {
-            const overlay = document.getElementById('message-overlay');
-            const msgBox = document.getElementById('message-text');
-            const closeBtn = document.getElementById('message-close');
-            
-            overlay.classList.remove('hidden');
-            msgBox.innerHTML = text;
-            
-            if (isError) {
-                msgBox.className = "text-glow-pink text-center text-sm md:text-base leading-loose p-4";
-                closeBtn.classList.remove('hidden');
-            } else {
-                msgBox.className = "text-glow-green text-center text-sm md:text-base leading-loose p-4 crt-flicker";
-                closeBtn.classList.add('hidden');
-            }
-        }
-
-        function hideMessage() {
-            document.getElementById('message-overlay').classList.add('hidden');
-        }
-
-        function toggleFullscreen() {
-            const container = document.getElementById('game-container');
-            if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        async function playGame() {
+        window.startGame = async function() {
             const gameSelect = document.getElementById('game-select').value;
-            const fileInput = document.getElementById('rom-file');
-            const canvasElement = document.getElementById('arcade-canvas');
+            const menu = document.getElementById('menu');
+            const gameContainer = document.getElementById('game-container');
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error-div');
             
-            let coreToUse = '';
-            let romsToLoad = null;
-
-            if (!gameSelect) {
-                showMessage("SYSTEM ERROR:<br><br>PLEASE SELECT A GAME.", true);
-                return;
-            }
-
-            if (gameSelect === 'custom') {
-                if (fileInput.files.length === 0) {
-                    showMessage("SYSTEM ERROR:<br><br>PLEASE UPLOAD A CUSTOM ROM (.zip).", true);
-                    return;
-                }
-                coreToUse = 'fbneo';
-                romsToLoad = Array.from(fileInput.files);
-            } else {
-                const gameConfig = gameLibrary[gameSelect];
-                coreToUse = gameConfig.core;
-                romsToLoad = gameConfig.roms;
-            }
+            errorDiv.innerHTML = "";
+            menu.style.display = 'none';
+            loading.style.display = 'block';
 
             try {
-                showMessage("INITIALIZING CORE...<br>DOWNLOADING ROM DATA...<br>PLEASE WAIT.");
-                
-                // DYNAMIC IMPORT: Ito yung fix para laging gumana yung emulator
+                // Kumukuha ng Nostalgist library
                 const { Nostalgist } = await import('https://esm.sh/nostalgist');
 
+                // Linisin kung may nakabukas na laro dati
                 if (nostalgistInstance) {
-                    nostalgistInstance.exit();
-                    nostalgistInstance = null;
+                    nostalgistInstance.exit({ removeCanvas: true });
+                    nostalgistInstance = null; 
                 }
 
+                gameContainer.style.display = 'flex';
+
+                // Buksan ang laro gamit ang FinalBurn Neo core
                 nostalgistInstance = await Nostalgist.launch({
-                    core: coreToUse,
-                    rom: romsToLoad,
-                    element: canvasElement
+                    core: 'fbneo', 
+                    rom: 'roms/' + gameSelect, 
+                    element: gameContainer,
+                    resolveRom(file) {
+                        return 'roms/' + file;
+                    }
                 });
-                
-                hideMessage();
-                document.getElementById('fullscreen-btn').classList.remove('hidden');
-                document.getElementById('fullscreen-btn').classList.add('inline-block');
+
+                loading.style.display = 'none';
 
             } catch (error) {
-                console.error("Emulator Error:", error);
-                showMessage(`FATAL ERROR:<br><br>${error.message}<br><br>Check if ddsomur1.zip is in the /roms/ folder.`, true);
+                console.error(error);
+                loading.style.display = 'none';
+                menu.style.display = 'flex';
+                gameContainer.style.display = 'none';
+                
+                errorDiv.innerHTML = `
+                    FATAL ERROR:<br><br>
+                    ${error.message}<br><br>
+                    Check if <b>${gameSelect}</b> is in the <b>/roms/</b> folder.
+                `;
             }
-        }
-
-        function simKey(key, keyCode, eventType) {
-            if(event && event.cancelable) {
-                event.preventDefault();
-            }
-            const e = new KeyboardEvent(eventType, {
-                key: key,
-                code: key.startsWith('Arrow') ? key : `Key${key.toUpperCase()}`,
-                keyCode: keyCode,
-                which: keyCode,
-                bubbles: true,
-                cancelable: true
-            });
-            document.dispatchEvent(e);
-            const canvas = document.getElementById('arcade-canvas');
-            if(canvas) {
-                canvas.dispatchEvent(e);
-            }
-        }
+        };
     </script>
 </body>
 </html>
